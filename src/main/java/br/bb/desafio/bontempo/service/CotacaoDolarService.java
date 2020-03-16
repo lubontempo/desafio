@@ -1,7 +1,9 @@
 package br.bb.desafio.bontempo.service;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,6 +50,22 @@ public class CotacaoDolarService {
 			
 			repository.saveAndFlush(cotacaoDB);
 			result = cotacaoDB;
+		}
+		
+		return result;
+	}
+
+	public List<CotacaoDolar> buscarCotacaoPorMes(String mes) {
+		List<CotacaoDolar> result = new ArrayList<CotacaoDolar>();
+		List<CotacaoDolarWS> lista = bacenWS.callCotacaoPorMes(mes);
+		for (CotacaoDolarWS cotacaoWS : lista) {
+			CotacaoDolar cotacaoDB = new CotacaoDolar();
+			cotacaoDB.setDataRequisicao(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+			cotacaoDB.setDataHoraCotacao(cotacaoWS.getDataHoraCotacao());
+			cotacaoDB.setVlCotacaoCompra(cotacaoWS.getCotacaoCompra());
+			cotacaoDB.setVlCotacaoVenda(cotacaoWS.getCotacaoVenda());
+			
+			result.add(cotacaoDB);
 		}
 		
 		return result;

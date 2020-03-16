@@ -1,6 +1,7 @@
 package br.bb.desafio.bontempo.controller.dto;
 
 import java.io.Serializable;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 
@@ -8,6 +9,7 @@ public class ResultDTO implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	private Object dto;
+	private List list;
 	private String message;
 	private HttpStatus status;
 
@@ -33,5 +35,13 @@ public class ResultDTO implements Serializable {
 
 	public void setStatus(HttpStatus status) {
 		this.status = status;
+	}
+
+	public List getList() {
+		return list;
+	}
+
+	public void setList(List list) {
+		this.list = list;
 	}
 }

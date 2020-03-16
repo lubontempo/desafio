@@ -1,11 +1,10 @@
 package br.bb.desafio.bontempo.webservice;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -48,32 +47,33 @@ public class BacenService {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		CotacaoDolarWS result = mock(data);
 		return result;
 	}
 
-	private CotacaoDolarWS mock(String data) {
-		String reverseData = null;
+	public List<CotacaoDolarWS> callCotacaoPorMes(String mes) {
+		if (mes.length() == 1) {
+			mes = "0" + mes;
+		}
+		RestTemplate template = new RestTemplate();
+		String dados = template.getForObject("https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"
+				+ "@dataInicial='" + mes + "-01-2020'&@dataFinalCotacao='" + mes + "-30-2020'&$top=100&$format=json", String.class);
+		List<CotacaoDolarWS> result = new ArrayList<CotacaoDolarWS>();
 		try {
-			Date objDate = new SimpleDateFormat("dd-MM-yyyy").parse(data);
-			reverseData = new SimpleDateFormat("yyyy-MM-dd").format(objDate);
-		} catch (ParseException e) {
+			final ObjectNode node = new ObjectMapper().readValue(dados, ObjectNode.class);
+			node.remove("@odata.context");
+			node.arrayNode();
+
+			String obj = node.get("value").toString();
+			CotacaoDolarWS[] cotacaoValue = new ObjectMapper().readValue(obj, CotacaoDolarWS[].class);
+			if (cotacaoValue.length > 0) {
+				for (int i = 0; i < cotacaoValue.length; i++) {
+					result.add(cotacaoValue[i]);
+				}
+			}
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		CotacaoDolarWS result = new CotacaoDolarWS();
-		result.setDataHoraCotacao(reverseData + " 13:04:43.137");
-		result.setCotacaoCompra(getRandomValue().toString());
-		result.setCotacaoVenda(getRandomValue().toString());
 		return result;
 	}
-
-	private Double getRandomValue() {
-		Double vl1 = new Random().nextDouble() * 5;
-		if (vl1.doubleValue() < 1) {
-			vl1 = vl1 + 1;
-		}
-		Double vlC = BigDecimal.valueOf(vl1).setScale(4, RoundingMode.HALF_UP).doubleValue();
-		return vlC;
-	}
+	
 }
