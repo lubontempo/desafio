@@ -32,7 +32,6 @@ public class BacenService {
 		}
 		
 		RestTemplate template = new RestTemplate();
-		/*
 		String dados = template.getForObject("https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarDia(dataCotacao=@dataCotacao)?"
 				+ "@dataCotacao='" + reverseData + "'&$format=json", String.class);
 		CotacaoDolarWS result = null;
@@ -48,8 +47,8 @@ public class BacenService {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-		}*/
-		CotacaoDolarWS result = mock(data);
+		}
+//		CotacaoDolarWS result = mock(data);
 		return result;
 	}
 
