@@ -56,7 +56,7 @@ public class BacenService {
 		}
 		RestTemplate template = new RestTemplate();
 		String dados = template.getForObject("https://olinda.bcb.gov.br/olinda/servico/PTAX/versao/v1/odata/CotacaoDolarPeriodo(dataInicial=@dataInicial,dataFinalCotacao=@dataFinalCotacao)?"
-				+ "@dataInicial='" + mes + "-01-2020'&@dataFinalCotacao='" + mes + "-30-2020'&$top=100&$format=json", String.class);
+				+ "@dataInicial='" + mes + "-01-2020'&@dataFinalCotacao='" + mes + "-29-2020'&$top=100&$format=json", String.class);
 		List<CotacaoDolarWS> result = new ArrayList<CotacaoDolarWS>();
 		try {
 			final ObjectNode node = new ObjectMapper().readValue(dados, ObjectNode.class);
